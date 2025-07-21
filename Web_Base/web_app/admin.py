@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import CustomUser
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.admin import SimpleListFilter
 
 
 @admin.register(CustomUser)
@@ -65,3 +66,13 @@ class CustomUserAdmin(UserAdmin):
             }
         ),
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(is_deleted=False)
+
+    actions = ['soft_delete_selected']
+
+    def soft_delete_selected(self, request, queryset):
+        queryset.update(is_deleted=True)
+        self.message_user(request, "Selected users have been soft-deleted.")
+    soft_delete_selected.short_description = "Soft delete selected users"

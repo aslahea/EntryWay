@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
 from django.contrib.auth import authenticate, login, logout
 from .forms import RegisterationForm
+from .models import CustomUser
 
 
 @csrf_protect
@@ -45,3 +46,8 @@ def logout_view(request):
 
 def home_view(request):
     return render(request, 'home.html')
+
+
+def user_list_view(request):
+    users = CustomUser.objects.filter(is_deleted=False)
+    return render(request, 'user_list.html', {'users': users})
