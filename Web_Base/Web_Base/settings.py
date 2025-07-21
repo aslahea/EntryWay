@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'web_app'
 ]
 
 MIDDLEWARE = [
@@ -75,7 +76,11 @@ WSGI_APPLICATION = 'Web_Base.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'web_base_db',
+        'USER': 'user_app_user',
+        'PASSWORD': 'securepassword',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
