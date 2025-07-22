@@ -78,10 +78,10 @@ WSGI_APPLICATION = 'Web_Base.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'web_base_db',
-        'USER': 'user_app_user',
-        'PASSWORD': 'securepassword',
+        'USER': 'ayoob',
+        'PASSWORD': 'ayoob123',
         'HOST': 'localhost',
         'PORT': '5432',
     }
