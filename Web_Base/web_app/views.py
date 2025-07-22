@@ -39,15 +39,15 @@ def login_view(request):
     return render(request, 'login.html')
 
 
-def logout_view(request):
-    logout(request)
-    return redirect('login')
+# def logout_view(request):
+#     logout(request)
+#     return redirect('login')
 
 
-def home_view(request):
-    return render(request, 'home.html')
+# def home_view(request):
+#     return render(request, 'home.html')
 
 
-def user_list_view(request):
-    users = CustomUser.objects.filter(is_deleted=False)
-    return render(request, 'user_list.html', {'users': users})
+# def user_list_view(request):
+#     users = CustomUser.objects.filter(is_deleted=False)
+#     return render(request, 'user_list.html', {'users': users})

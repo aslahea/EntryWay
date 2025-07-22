@@ -16,12 +16,19 @@ class RegisterationForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'full_name', 'email', 'gender',
-                  'date_of_birth', 'password1', 'password', 'terms']
+        fields = [
+            'username',
+            'full_name',
+            'email',
+            'gender',
+            'date_of_birth',
+            'password1',
+            'password2',   
+            'terms'
+        ]
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-
         if CustomUser.objects.filter(email=email).exists():
             raise ValidationError("Email already exists.")
         return email
