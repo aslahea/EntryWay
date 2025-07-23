@@ -26,7 +26,7 @@ def login_view(request):
             if not user.is_deleted:
                 login(request, user)
                 messages.success(request, "Login successful.")
-                return redirect('home')  # Replace with your home URL name
+                return redirect('home')
             else:
                 messages.error(request, "Your account has been deactivated.")
                 return redirect('login')
@@ -123,6 +123,6 @@ def register_view(request):
         # """)
 
         messages.success(request, "Registration successful. Please log in.")
-        return redirect('login.html')
+        return redirect('login')
 
     return render(request, 'register.html')
