@@ -4,10 +4,42 @@
 {% block content %}
 <div class="container mt-5">
     <div class="text-center border border-2 rounded p-4 shadow">
-        <h1 class="mb-3">Welcome, {{ request.user.username }}!</h1>
+        <h1 class="mb-3">Welcome, {{ user.username }}!</h1>
         <p class="lead">You have successfully logged in.</p>
         <hr>
-        <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+
+        <h4 class="mt-4">Your Profile Details:</h4>
+        <table class="table table-bordered w-75 mx-auto mt-3 text-start">
+            <tr>
+                <th>Username</th>
+                <td>{{ user.username }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Date of Birth</th>
+                <td>{{ user.dob|default:"Not Provided" }}</td>
+            </tr>
+            <tr>
+                <th>Gender</th>
+                <td>{{ user.get_gender_display|default:"Not Specified" }}</td>
+            </tr>
+            <tr>
+                <th>Marital Status</th>
+                <td>{{ user.get_marital_status_display|default:"Not Specified" }}</td>
+            </tr>
+            <tr>
+                <th>Date Joined</th>
+                <td>{{ user.date_joined }}</td>
+            </tr>
+            <tr>
+                <th>Last Login</th>
+                <td>{{ user.last_login|default:"Never Logged In" }}</td>
+            </tr>
+
+        </table>
     </div>
 </div>
 {% endblock %}
