@@ -1,12 +1,13 @@
 from .models import CustomUser
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.utils.dateparse import parse_date
+from django.contrib.auth.decorators import login_required
 
 
 @csrf_protect
@@ -126,3 +127,14 @@ def register_view(request):
         return redirect('login')
 
     return render(request, 'register.html')
+
+@login_required(login_url='login')
+@never_cache
+def home_view(request):
+    return render(request, 'home.html')
+
+
+def logout_view(request):
+    logout(request)  
+    messages.success(request, "You have been logged out successfully.")
+    return redirect('login')
