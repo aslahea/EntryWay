@@ -256,7 +256,7 @@ function attachAdminLoginValidation(formId) {
 
 
 // ------------------ Admin Create/Edit User Validation ------------------
-function attachAdminUserFormValidation(formId) {
+function attachAdminUserFormValidation(formId, includePassword = false, includeTerms = false) {
     const form = document.getElementById(formId);
     const submitBtn = document.getElementById("adminSubmitBtn");
 
@@ -266,23 +266,49 @@ function attachAdminUserFormValidation(formId) {
     const gender = document.getElementById("gender");
     const maritalRadios = document.getElementsByName("marital_status");
 
+    const password1 = document.getElementById("password1");
+    const password2 = document.getElementById("password2");
+    const terms = document.getElementById("terms");
+
     function validateFields() {
-        const isValid =
+        let isValid =
             validateUsername(username) &&
             validateEmail(email) &&
             validateDOB(dob) &&
             validateGender(gender) &&
             validateMaritalStatus();
 
+        if (includePassword) {
+            isValid = isValid &&
+                validatePassword(password1) &&
+                validateConfirmPassword(password1, password2);
+        }
+
+        if (includeTerms) {
+            isValid = isValid && validateTerms(terms);
+        }
+
         submitBtn.disabled = !isValid;
         submitBtn.classList.toggle('disabled', !isValid);
     }
 
+    // Bind input/blur/change events
     [username, email, dob, gender].forEach(input => {
         input.addEventListener("input", validateFields);
         input.addEventListener("blur", validateFields);
         input.addEventListener("change", validateFields);
     });
+
+    if (includePassword) {
+        [password1, password2].forEach(input => {
+            input.addEventListener("input", validateFields);
+            input.addEventListener("blur", validateFields);
+        });
+    }
+
+    if (includeTerms && terms) {
+        terms.addEventListener("change", validateFields);
+    }
 
     for (let i = 0; i < maritalRadios.length; i++) {
         maritalRadios[i].addEventListener("change", validateFields);

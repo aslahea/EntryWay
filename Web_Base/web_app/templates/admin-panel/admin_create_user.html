@@ -7,70 +7,93 @@
     <h3>Add New User</h3>
 
     {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
     {% endif %}
 
     <form method="POST" id="registerForm" novalidate>
         {% csrf_token %}
-        <div class="form-group">
-            <label>Username *</label>
-            <input type="text" name="username" class="form-control" required>
+
+        <div class="form-group mb-3">
+            <label for="username">Username *</label>
+            <input type="text" name="username" id="username" class="form-control" required>
+            <div class="error-message text-danger small mt-1"></div>
         </div>
-        <div class="form-group">
-            <label>Email *</label>
-            <input type="email" name="email" class="form-control" required>
+
+        <div class="form-group mb-3">
+            <label for="email">Email *</label>
+            <input type="email" name="email" id="email" class="form-control" required>
+            <div class="error-message text-danger small mt-1"></div>
         </div>
-        <div class="form-group">
-            <label>Password *</label>
-            <input type="password" name="password" class="form-control" required>
+
+        <div class="form-group mb-3">
+            <label for="password1">Password *</label>
+            <input type="password" name="password" id="password1" class="form-control" required>
+            <div class="error-message text-danger small mt-1"></div>
         </div>
-        <div class="form-group">
-            <label>Confirm Password *</label>
-            <input type="password" name="confirm_password" class="form-control" required>
+
+        <div class="form-group mb-3">
+            <label for="password2">Confirm Password *</label>
+            <input type="password" name="confirm_password" id="password2" class="form-control" required>
+            <div class="error-message text-danger small mt-1"></div>
         </div>
-        <div class="form-group">
-            <label>Date of Birth</label>
-            <input type="date" name="dob" class="form-control">
+
+        <div class="form-group mb-3">
+            <label for="dob">Date of Birth</label>
+            <input type="date" name="dob" id="dob" class="form-control">
+            <div class="error-message text-danger small mt-1"></div>
         </div>
-        <div class="form-group">
-            <label>Gender</label>
-            <select name="gender" class="form-control">
+
+        <div class="form-group mb-3">
+            <label for="gender">Gender</label>
+            <select name="gender" id="gender" class="form-control">
                 <option value="">Select</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
             </select>
-        </div>
-        <div class="form-group">
-            <label>Marital Status</label>
-            <select name="marital_status" class="form-control">
-                <option value="">Select</option>
-                <option value="Single">Single</option>
-                <option value="Married">Married</option>
-            </select>
+            <div class="error-message text-danger small mt-1"></div>
         </div>
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="is_active" value="1" checked>
-            <label class="form-check-label">Is Active</label>
+        <div class="form-group mb-3">
+            <label>Marital Status</label><br>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="marital_status" id="single" value="Single" required>
+                <label class="form-check-label" for="single">Single</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="marital_status" id="married" value="Married">
+                <label class="form-check-label" for="married">Married</label>
+            </div>
+            <div class="error-message text-danger small mt-1"></div>
         </div>
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="is_staff" value="1">
-            <label class="form-check-label">Is Staff</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="is_superuser" value="1">
-            <label class="form-check-label">Is Superuser</label>
+        
+
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" name="is_active" id="is_active" value="1" checked>
+            <label class="form-check-label" for="is_active">Is Active</label>
         </div>
 
-        <button type="submit" class="btn btn-primary mt-3">Create User</button>
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" name="is_staff" id="is_staff" value="1">
+            <label class="form-check-label" for="is_staff">Is Staff</label>
+        </div>
+
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" name="is_superuser" id="is_superuser" value="1">
+            <label class="form-check-label" for="is_superuser">Is Superuser</label>
+        </div>
+
+        <button type="submit" id="adminSubmitBtn" class="btn btn-primary mt-3">Create User</button>
         <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary mt-3">Cancel</a>
     </form>
 </div>
+
 <script src="{% static 'js/validation.js' %}"></script>
 <script>
-    attachAdminUserFormValidation("registerForm");
+    document.addEventListener("DOMContentLoaded", function () {
+        attachAdminUserFormValidation("registerForm", true); 
+    });
 </script>
 {% endblock %}
