@@ -19,8 +19,7 @@
                 <!-- Username -->
                 <div class="col-md-6 mb-3">
                     <label for="username">Username *</label>
-                    <input type="text" name="username" id="username" class="form-control" value="{{ user.username }}"
-                        required>
+                    <input type="text" name="username" id="username" class="form-control" value="{{ user.username }}" required>
                     <div class="error-message text-danger small mt-1"></div>
                 </div>
 
@@ -33,14 +32,14 @@
 
                 <!-- Date of Birth -->
                 <div class="col-md-6 mb-3">
-                    <label for="dob">Date of Birth</label>
+                    <label for="dob">Date of Birth *</label>
                     <input type="date" name="dob" id="dob" class="form-control" value="{{ user.dob|date:'Y-m-d' }}">
                     <div class="error-message text-danger small mt-1"></div>
                 </div>
 
                 <!-- Gender -->
                 <div class="col-md-6 mb-3">
-                    <label for="gender">Gender</label>
+                    <label for="gender">Gender *</label>
                     <select name="gender" id="gender" class="form-control">
                         <option value="">Select</option>
                         <option value="Male" {% if user.gender == "Male" %}selected{% endif %}>Male</option>
@@ -52,17 +51,14 @@
 
                 <!-- Marital Status -->
                 <div class="col-md-6 mb-3">
-                    <label>Marital Status</label><br>
+                    <label>Marital Status *</label><br>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="marital_status" id="single" value="Single"
-                        {% if user.marital_status == "Single" %}checked{% endif %}>
-                    <label class="form-check-label" for="single">Single</label>
+                        <input class="form-check-input" type="radio" name="marital_status" id="single" value="Single" {% if user.marital_status == "Single" %}checked{% endif %}>
+                        <label class="form-check-label" for="single">Single</label>
                     </div>
                     <div class="form-check form-check-inline">
-
-                        <input class="form-check-input" type="radio" name="marital_status" id="married" value="Married"
-                        {% if user.marital_status == "Married" %}checked{% endif %}>
-                    <label class="form-check-label" for="married">Married</label>
+                        <input class="form-check-input" type="radio" name="marital_status" id="married" value="Married" {% if user.marital_status == "Married" %}checked{% endif %}>
+                        <label class="form-check-label" for="married">Married</label>
                     </div>
                     <div class="error-message text-danger small mt-1" id="marital_status_error"></div>
                 </div>
@@ -83,6 +79,7 @@
                         <label class="form-check-label" for="is_superuser">Superuser</label>
                     </div>
                 </div>
+            </div>
 
             <!-- Submit + Cancel -->
             <div class="mt-4 d-flex justify-content-between">
@@ -92,10 +89,12 @@
         </form>
     </div>
 </div>
-{% endblock %}
 
-{% block extra_js %}
+<script src="{% static 'js/validation.js' %}"></script>
 <script>
-    attachAdminUserFormValidation("adminEditUserForm");
+    document.addEventListener('DOMContentLoaded', function () {
+        attachAdminUserFormValidation("adminEditUserForm", false, false);
+    });
 </script>
+
 {% endblock %}
