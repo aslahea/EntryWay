@@ -62,10 +62,14 @@
     <div class="col-md-2">
         <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
     </div>
+    <div class="col-md-2">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary w-100">Clear Filters</a>
+    </div>
 </form>
 
+
 <!-- User Table -->
-<div class="table-responsive">
+<div class="table-responsive">  
     <table class="table table-bordered table-hover table-striped">
         <thead class="table-dark">
             <tr>
