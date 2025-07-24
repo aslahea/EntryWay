@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container mt-5 border border-2 rounded p-4 mb-4">
     <h2 class="mb-4 text-center">Register</h2>
-    <form id="registerForm" method="POST" enctype="multipart/form-data" novalidate>
+    <form id="registerForm" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
         <div class="mb-3">
@@ -55,7 +55,7 @@
                 <option value="">-- Select Gender --</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
-                <option value="Other">Other</option>
+                <option value="Others">Other</option>
             </select>
             <div class="text-danger error-message"></div>
         </div>

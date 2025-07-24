@@ -1,5 +1,5 @@
 from .models import CustomUser
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
@@ -8,6 +8,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.utils.dateparse import parse_date
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Q
 
 
 @csrf_protect
@@ -46,15 +49,16 @@ def welcome_view(request):
 
 User = get_user_model()
 
-        # User registration details: 
-        # Username: Ayoob
-        # Email: ayoob@gmail.com
-        # Password: ru_NW-r8epGeVQK
-        # confirm Password: ru_NW-r8epGeVQK
-        # dob: 2025-07-08
-        # gender: Male
-        # marital_status: Single
-        # agree_to_terms: on
+# User registration details:
+# Username: Ayoob
+# Email: ayoob@gmail.com
+# Password: ru_NW-r8epGeVQK
+# confirm Password: ru_NW-r8epGeVQK
+# dob: 2025-07-08
+# gender: Male
+# marital_status: Single
+# agree_to_terms: on
+
 
 @csrf_protect
 @never_cache
@@ -68,6 +72,11 @@ def register_view(request):
         gender = request.POST.get('gender', '')
         marital_status = request.POST.get('marital_status', '')
         terms = request.POST.get('terms', '')
+
+        # change gender setting
+        if gender not in ['Male', 'Female', 'Other']:
+            messages.error(request, "Malformed gender value")
+            return redirect('register')
 
         # Server-side validations
         if not username or not email or not password1 or not password2:
@@ -108,11 +117,11 @@ def register_view(request):
             dob=parse_date(dob),
             gender=gender,
             marital_status=marital_status,
-            agree_to_terms= True if terms == 'on' else False,
+            agree_to_terms=True if terms == 'on' else False,
         )
 
         # print(f"""
-        # User registration details: 
+        # User registration details:
         # Username: {username}
         # Email: {email}
         # Password: {password1}
@@ -128,6 +137,7 @@ def register_view(request):
 
     return render(request, 'register.html')
 
+
 @login_required(login_url='login')
 @never_cache
 def home_view(request):
@@ -135,6 +145,15 @@ def home_view(request):
 
 
 def logout_view(request):
-    logout(request)  
+    logout(request)
     messages.success(request, "You have been logged out successfully.")
     return redirect('login')
+
+
+def soft_delete_user(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    user.is_deleted = True
+    user.save()
+    return redirect('admin:web_app_customuser_changelist')
+
+
