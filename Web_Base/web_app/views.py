@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 
 @csrf_protect
@@ -157,3 +158,177 @@ def soft_delete_user(request, user_id):
     return redirect('admin:web_app_customuser_changelist')
 
 
+# ================= Custom Admin Panel ==================
+
+def is_admin(user):
+    return user.is_staff and user.is_superuser
+
+
+@csrf_protect
+@never_cache
+def admin_login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user and user.is_superuser:
+            request.session['admin_id'] = user.id
+            login(request, user)  # Ensure admin is logged in
+            # Add feedback
+            messages.success(request, "Admin login successful.")
+            # Ensure this matches your urls.py
+            return redirect('admin_dashboard')
+        else:
+            messages.error(request, 'Invalid credentials or not an admin.')
+
+    return render(request, 'admin-panel/admin_login.html')  # Fix template path
+
+@never_cache
+@login_required(login_url='admin_login')
+@user_passes_test(is_admin, login_url='admin_login')
+def admin_dashboard(request):
+    users = CustomUser.objects.filter(is_deleted=False)
+
+    # Get filters
+    search = request.GET.get('search', '')
+    gender = request.GET.get('gender', '')
+    marital_status = request.GET.get('marital_status', '')
+    is_active = request.GET.get('is_active', '')
+    is_staff = request.GET.get('is_staff', '')
+    is_superuser = request.GET.get('is_superuser', '')
+    ordering = request.GET.get('ordering', '-date_joined')  # Default newest
+
+    # Apply filters
+    if search:
+        users = users.filter(
+            Q(username__icontains=search) |
+            Q(email__icontains=search) |
+            Q(gender__icontains=search)
+        )
+    if gender:
+        users = users.filter(gender=gender)
+    if marital_status:
+        users = users.filter(marital_status=marital_status)
+    if is_active:
+        users = users.filter(is_active=(is_active == "Yes"))
+    if is_staff:
+        users = users.filter(is_staff=(is_staff == "Yes"))
+    if is_superuser:
+        users = users.filter(is_superuser=(is_superuser == "Yes"))
+
+    # Ordering
+    users = users.order_by(ordering)
+
+    # Pagination
+    paginator = Paginator(users, 10)  # 10 users per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
+        'filters': {
+            'search': search,
+            'gender': gender,
+            'marital_status': marital_status,
+            'is_active': is_active,
+            'is_staff': is_staff,
+            'is_superuser': is_superuser,
+            'ordering': ordering,
+        }
+    }
+
+    return render(request, 'admin-panel/admin_dash.html', context)
+
+
+@login_required(login_url='admin_login')
+@user_passes_test(is_admin, login_url='admin_login')
+def admin_create_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        dob = request.POST.get('dob')
+        gender = request.POST.get('gender')
+        marital_status = request.POST.get('marital_status')
+        is_active = bool(request.POST.get('is_active'))
+        is_staff = bool(request.POST.get('is_staff'))
+        is_superuser = bool(request.POST.get('is_superuser'))
+
+        # Basic validations
+        if not username or not email or not password:
+            messages.error(
+                request, "Username, email, and password are required.")
+            return redirect('admin_create_user')
+
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+            return redirect('admin_create_user')
+
+        if CustomUser.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists.")
+            return redirect('admin_create_user')
+
+        user = CustomUser(
+            username=username,
+            email=email,
+            password=make_password(password),
+            dob=dob,
+            gender=gender,
+            marital_status=marital_status,
+            is_active=is_active,
+            is_staff=is_staff,
+            is_superuser=is_superuser,
+        )
+        user.save()
+        messages.success(request, "User created successfully.")
+        return redirect('admin_dashboard')
+
+    return render(request, 'admin-panel/admin_create_user.html')
+
+
+@login_required(login_url='admin_login')
+@user_passes_test(is_admin, login_url='admin_login')
+def admin_edit_user(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id, is_deleted=False)
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        dob = request.POST.get('dob') or None
+        gender = request.POST.get('gender')
+        marital_status = request.POST.get('marital_status')
+
+        user.username = username
+        user.email = email
+        user.dob = dob
+        user.gender = gender
+        user.marital_status = marital_status
+        user.is_active = bool(request.POST.get('is_active'))
+        user.is_staff = bool(request.POST.get('is_staff'))
+        user.is_superuser = bool(request.POST.get('is_superuser'))
+
+        user.save()
+        messages.success(request, "User updated successfully.")
+        return redirect('admin_dashboard')
+
+    return render(request, 'admin-panel/admin_edit_user.html', {'user': user})
+
+
+@login_required(login_url='admin_login')
+@user_passes_test(is_admin, login_url='admin_login')
+def admin_soft_delete_user(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    user.is_deleted = True
+    user.save()
+    messages.success(request, "User soft-deleted")
+    return redirect('admin_dashboard')
+
+
+def admin_logout_view(request):
+    logout(request)
+    messages.success(request, "Admin logged out")
+    return redirect('admin_login')

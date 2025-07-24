@@ -1,0 +1,71 @@
+{% extends 'admin-panel/admin_base.html' %}
+{% block title %}Edit User{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm p-4">
+        <h3 class="mb-3">Edit User</h3>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" novalidate>
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Username *</label>
+                    <input type="text" name="username" class="form-control" required value="{{ user.username }}">
+                </div>
+                <div class="col-md-6">
+                    <label>Email *</label>
+                    <input type="email" name="email" class="form-control" required value="{{ user.email }}">
+                </div>
+                <div class="col-md-6 mt-3">
+                    <label>Date of Birth</label>
+                    <input type="date" name="dob" class="form-control" value="{{ user.dob|date:'Y-m-d' }}">
+                </div>
+                <div class="col-md-6 mt-3">
+                    <label>Gender</label>
+                    <select name="gender" class="form-control">
+                        <option value="">Select</option>
+                        <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if user.gender == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-3">
+                    <label>Marital Status</label>
+                    <select name="marital_status" class="form-control">
+                        <option value="">Select</option>
+                        <option value="Single" {% if user.marital_status == 'Single' %}selected{% endif %}>Single</option>
+                        <option value="Married" {% if user.marital_status == 'Married' %}selected{% endif %}>Married</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-3">
+                    <label>Status</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="is_active" value="1" {% if user.is_active %}checked{% endif %}>
+                        <label class="form-check-label">Active</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="is_staff" value="1" {% if user.is_staff %}checked{% endif %}>
+                        <label class="form-check-label">Staff</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="is_superuser" value="1" {% if user.is_superuser %}checked{% endif %}>
+                        <label class="form-check-label">Superuser</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Update User</button>
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
