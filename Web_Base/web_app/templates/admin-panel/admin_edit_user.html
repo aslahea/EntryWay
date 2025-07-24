@@ -1,5 +1,6 @@
 {% extends 'admin-panel/admin_base.html' %}
 {% block title %}Edit User{% endblock %}
+{% load static %}
 
 {% block content %}
 <div class="container mt-4">
@@ -7,65 +8,94 @@
         <h3 class="mb-3">Edit User</h3>
 
         {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-            {% endfor %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
         {% endif %}
 
-        <form method="POST" novalidate>
+        <form method="POST" id="adminEditUserForm" novalidate>
             {% csrf_token %}
             <div class="row">
-                <div class="col-md-6">
-                    <label>Username *</label>
-                    <input type="text" name="username" class="form-control" required value="{{ user.username }}">
+                <!-- Username -->
+                <div class="col-md-6 mb-3">
+                    <label for="username">Username *</label>
+                    <input type="text" name="username" id="username" class="form-control" value="{{ user.username }}"
+                        required>
+                    <div class="error-message text-danger small mt-1"></div>
                 </div>
-                <div class="col-md-6">
-                    <label>Email *</label>
-                    <input type="email" name="email" class="form-control" required value="{{ user.email }}">
+
+                <!-- Email -->
+                <div class="col-md-6 mb-3">
+                    <label for="email">Email *</label>
+                    <input type="email" name="email" id="email" class="form-control" value="{{ user.email }}" required>
+                    <div class="error-message text-danger small mt-1"></div>
                 </div>
-                <div class="col-md-6 mt-3">
-                    <label>Date of Birth</label>
-                    <input type="date" name="dob" class="form-control" value="{{ user.dob|date:'Y-m-d' }}">
+
+                <!-- Date of Birth -->
+                <div class="col-md-6 mb-3">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" name="dob" id="dob" class="form-control" value="{{ user.dob|date:'Y-m-d' }}">
+                    <div class="error-message text-danger small mt-1"></div>
                 </div>
-                <div class="col-md-6 mt-3">
-                    <label>Gender</label>
-                    <select name="gender" class="form-control">
+
+                <!-- Gender -->
+                <div class="col-md-6 mb-3">
+                    <label for="gender">Gender</label>
+                    <select name="gender" id="gender" class="form-control">
                         <option value="">Select</option>
-                        <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
-                        <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female</option>
-                        <option value="Other" {% if user.gender == 'Other' %}selected{% endif %}>Other</option>
+                        <option value="Male" {% if user.gender == "Male" %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if user.gender == "Female" %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if user.gender == "Other" %}selected{% endif %}>Other</option>
                     </select>
+                    <div class="error-message text-danger small mt-1"></div>
                 </div>
-                <div class="col-md-6 mt-3">
-                    <label>Marital Status</label>
-                    <select name="marital_status" class="form-control">
-                        <option value="">Select</option>
-                        <option value="Single" {% if user.marital_status == 'Single' %}selected{% endif %}>Single</option>
-                        <option value="Married" {% if user.marital_status == 'Married' %}selected{% endif %}>Married</option>
-                    </select>
+
+                <!-- Marital Status -->
+                <div class="col-md-6 mb-3">
+                    <label>Marital Status</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="marital_status" id="single" value="Single"
+                        {% if user.marital_status == "Single" %}checked{% endif %}>
+                    <label class="form-check-label" for="single">Single</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+
+                        <input class="form-check-input" type="radio" name="marital_status" id="married" value="Married"
+                        {% if user.marital_status == "Married" %}checked{% endif %}>
+                    <label class="form-check-label" for="married">Married</label>
+                    </div>
+                    <div class="error-message text-danger small mt-1" id="marital_status_error"></div>
                 </div>
-                <div class="col-md-6 mt-3">
+
+                <!-- Status Flags -->
+                <div class="col-md-6 mb-3">
                     <label>Status</label><br>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="is_active" value="1" {% if user.is_active %}checked{% endif %}>
-                        <label class="form-check-label">Active</label>
+                        <input class="form-check-input" type="checkbox" name="is_active" id="is_active" value="1" {% if user.is_active %}checked{% endif %}>
+                        <label class="form-check-label" for="is_active">Active</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="is_staff" value="1" {% if user.is_staff %}checked{% endif %}>
-                        <label class="form-check-label">Staff</label>
+                        <input class="form-check-input" type="checkbox" name="is_staff" id="is_staff" value="1" {% if user.is_staff %}checked{% endif %}>
+                        <label class="form-check-label" for="is_staff">Staff</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="is_superuser" value="1" {% if user.is_superuser %}checked{% endif %}>
-                        <label class="form-check-label">Superuser</label>
+                        <input class="form-check-input" type="checkbox" name="is_superuser" id="is_superuser" value="1" {% if user.is_superuser %}checked{% endif %}>
+                        <label class="form-check-label" for="is_superuser">Superuser</label>
                     </div>
                 </div>
-            </div>
 
+            <!-- Submit + Cancel -->
             <div class="mt-4 d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">Update User</button>
+                <button type="submit" id="adminSubmitBtn" class="btn btn-primary">Update User</button>
                 <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    attachAdminUserFormValidation("adminEditUserForm");
+</script>
 {% endblock %}

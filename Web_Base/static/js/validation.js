@@ -211,3 +211,89 @@ function attachLoginValidation(formId) {
 }
 
 
+// ------------------ Admin Login Validation ------------------
+function attachAdminLoginValidation(formId) {
+    const form = document.getElementById(formId);
+    const username = document.getElementById("adminUsername");
+    const password = document.getElementById("adminPassword");
+    const submitBtn = document.getElementById("adminLoginBtn");
+
+    function validateFields() {
+        let isValid = true;
+
+        if (!username.value.trim()) {
+            showError(username, "Username is required.");
+            isValid = false;
+        } else {
+            clearError(username);
+        }
+
+        if (!password.value.trim()) {
+            showError(password, "Password is required.");
+            isValid = false;
+        } else {
+            clearError(password);
+        }
+
+        submitBtn.disabled = !isValid;
+        submitBtn.classList.toggle('disabled', !isValid);
+    }
+
+    [username, password].forEach(input => {
+        input.addEventListener("input", validateFields);
+        input.addEventListener("blur", validateFields);
+    });
+
+    form.addEventListener("submit", function (e) {
+        validateFields();
+        if (submitBtn.disabled) {
+            e.preventDefault();
+        }
+    });
+
+    validateFields();
+}
+
+
+// ------------------ Admin Create/Edit User Validation ------------------
+function attachAdminUserFormValidation(formId) {
+    const form = document.getElementById(formId);
+    const submitBtn = document.getElementById("adminSubmitBtn");
+
+    const username = document.getElementById("username");
+    const email = document.getElementById("email");
+    const dob = document.getElementById("dob");
+    const gender = document.getElementById("gender");
+    const maritalRadios = document.getElementsByName("marital_status");
+
+    function validateFields() {
+        const isValid =
+            validateUsername(username) &&
+            validateEmail(email) &&
+            validateDOB(dob) &&
+            validateGender(gender) &&
+            validateMaritalStatus();
+
+        submitBtn.disabled = !isValid;
+        submitBtn.classList.toggle('disabled', !isValid);
+    }
+
+    [username, email, dob, gender].forEach(input => {
+        input.addEventListener("input", validateFields);
+        input.addEventListener("blur", validateFields);
+        input.addEventListener("change", validateFields);
+    });
+
+    for (let i = 0; i < maritalRadios.length; i++) {
+        maritalRadios[i].addEventListener("change", validateFields);
+    }
+
+    form.addEventListener("submit", function (e) {
+        validateFields();
+        if (submitBtn.disabled) {
+            e.preventDefault();
+        }
+    });
+
+    validateFields();
+}

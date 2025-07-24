@@ -185,6 +185,7 @@ def admin_login_view(request):
 
     return render(request, 'admin-panel/admin_login.html')  # Fix template path
 
+
 @never_cache
 @login_required(login_url='admin_login')
 @user_passes_test(is_admin, login_url='admin_login')
@@ -247,8 +248,8 @@ def admin_dashboard(request):
 @user_passes_test(is_admin, login_url='admin_login')
 def admin_create_user(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
+        username = request.POST.get('username').strip()
+        email = request.POST.get('email').strip()
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
         dob = request.POST.get('dob')
@@ -258,10 +259,9 @@ def admin_create_user(request):
         is_staff = bool(request.POST.get('is_staff'))
         is_superuser = bool(request.POST.get('is_superuser'))
 
-        # Basic validations
-        if not username or not email or not password:
-            messages.error(
-                request, "Username, email, and password are required.")
+        # Server-side validations
+        if not username or not email or not password or not confirm_password:
+            messages.error(request, "All required fields must be filled.")
             return redirect('admin_create_user')
 
         if password != confirm_password:
@@ -270,6 +270,10 @@ def admin_create_user(request):
 
         if CustomUser.objects.filter(username=username).exists():
             messages.error(request, "Username already exists.")
+            return redirect('admin_create_user')
+
+        if CustomUser.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists.")
             return redirect('admin_create_user')
 
         user = CustomUser(
@@ -296,11 +300,25 @@ def admin_edit_user(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id, is_deleted=False)
 
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
+        username = request.POST.get('username').strip()
+        email = request.POST.get('email').strip()
         dob = request.POST.get('dob') or None
         gender = request.POST.get('gender')
         marital_status = request.POST.get('marital_status')
+
+        # Server-side validations
+        if not username or not email:
+            messages.error(request, "Username and email are required.")
+            return redirect('admin_edit_user', user_id=user.id)
+
+        # Check unique constraints only if values changed
+        if username != user.username and CustomUser.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists.")
+            return redirect('admin_edit_user', user_id=user.id)
+
+        if email != user.email and CustomUser.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists.")
+            return redirect('admin_edit_user', user_id=user.id)
 
         user.username = username
         user.email = email
