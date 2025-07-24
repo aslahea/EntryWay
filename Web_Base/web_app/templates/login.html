@@ -4,10 +4,13 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="container vh-100 d-flex justify-content-center align-items-center">
-    <div class="col-md-5">
-        <div class="card shadow-lg p-4">
-            <h2 class="text-center mb-4">Login</h2>
+<div class="container vh-100 d-flex justify-content-center align-items-center ">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg border-0 rounded-4 p-4">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold">Welcome Back</h3>
+                <p class="text-muted small">Please login to continue</p>
+            </div>
 
             {% if messages %}
                 {% for message in messages %}
@@ -24,32 +27,38 @@
                 <!-- Username -->
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username">
+                    </div>
                     <div class="error-message text-danger small mt-1"></div>
                 </div>
 
                 <!-- Password -->
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
+                    </div>
                     <div class="error-message text-danger small mt-1"></div>
                 </div>
 
                 <!-- Submit -->
-                <button type="submit" class="btn btn-primary w-100" id="loginBtn">Login</button>
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary btn-lg" id="loginBtn">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Login
+                    </button>
+                </div>
             </form>
 
-            <div class="text-center mt-3">
-                <small>Don't have an account? <a href="{% url 'register' %}">Register here</a></small>
+            <div class="text-center mt-2">
+                <small class="text-muted">Don't have an account? <a href="{% url 'register' %}" class="text-primary">Register here</a></small>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Link your custom validation JS -->
+<!-- Scripts -->
 <script src="{% static 'js/validation.js' %}"></script>
-
-<!-- Initialize login validation -->
 <script>
     attachLoginValidation("loginForm");
 </script>
