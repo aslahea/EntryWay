@@ -17,6 +17,9 @@ from django.core.paginator import Paginator
 @csrf_protect
 @never_cache
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '')
@@ -167,6 +170,9 @@ def is_admin(user):
 @csrf_protect
 @never_cache
 def admin_login_view(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        return redirect('admin_dashboard')
+    
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
