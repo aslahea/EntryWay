@@ -1,5 +1,4 @@
-# Web-Base
-
+# EntryWay
 A complete Django web application with a custom-built admin panel, secure user management, and PostgreSQL backend. Built with Bootstrap for UI and JavaScript for validation.
 
 ---

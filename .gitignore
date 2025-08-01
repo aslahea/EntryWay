@@ -1,20 +1,35 @@
-# Ignore virtual environment
-web-base/
-
-# Ignore Python cache
+cat > .gitignore <<EOF
+# --- Python / Django ---
 __pycache__/
 *.py[cod]
-
-# Ignore SQLite database
+*.sqlite3
 db.sqlite3
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.swp
 
-# Ignore VS Code settings
+# --- Virtual Environment ---
+web-base/
+env/
+venv/
+
+# --- VSCode ---
 .vscode/
 
-# Ignore system files
-*.log
+# --- System files ---
 .DS_Store
 Thumbs.db
 
-# Ignore environment files
+# --- Environment Variables ---
 .env
+
+# --- Docker ---
+*.pid
+volumes/
+docker-volume-data/
+__docker_build__/
+EOF
