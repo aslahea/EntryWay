@@ -56,3 +56,5 @@ yarn-error.log*
 # --- Render deployment config (only ignore if stored locally) ---
 # comment out if you want to track this file
 # render.yaml
+
+.env

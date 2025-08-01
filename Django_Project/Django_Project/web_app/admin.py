@@ -11,11 +11,10 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
 
     list_display = (
-    'username', 'email', 'dob', 'bio', 'display_gender', 'marital_status',
-    'is_active', 'is_staff', 'is_superuser', 'is_deleted',
-    'date_joined', 'delete_action'
+        'username', 'email', 'dob', 'display_gender', 'marital_status',
+        'is_active', 'is_staff', 'is_superuser', 'is_deleted',
+        'date_joined', 'delete_action'
     )
-
 
     search_fields = (
         'username', 'email', 'dob', 'gender', 'marital_status'
@@ -32,9 +31,8 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('username', 'email', 'password')
         }),
         ('Personal Info', {
-        'fields': ('dob', 'gender', 'marital_status', 'bio')
+            'fields': ('dob', 'gender', 'marital_status')
         }),
-
         ('Permissions', {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
         }),
@@ -51,7 +49,7 @@ class CustomUserAdmin(UserAdmin):
             'classes': ('wide',),
             'fields': (
                 'username', 'email', 'password1', 'password2',
-                'dob', 'gender', 'marital_status', 'bio',
+                'dob', 'gender', 'marital_status',
                 'is_active', 'is_staff', 'is_superuser'
             ),
         }),

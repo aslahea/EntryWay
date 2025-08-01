@@ -2,12 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-import dotenv
 
-
-dotenv.load_dotenv()
-
-print("SECRET_KEY:", os.environ.get('SECRET_KEY'))
 
 def main():
     """Run administrative tasks."""

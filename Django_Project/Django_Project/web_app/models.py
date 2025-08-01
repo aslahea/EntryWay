@@ -7,8 +7,6 @@ class CustomUser(AbstractUser):
         ('Female', 'Female'),
         ('Other', 'Other'),
     )
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
-    bio = models.TextField(blank=True, null=True)  # 👈 new field added for migration test
     MARITAL_CHOICES = (
         ('Single', 'Single'),
         ('Married', 'Married'),

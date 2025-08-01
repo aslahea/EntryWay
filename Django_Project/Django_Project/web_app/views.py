@@ -12,7 +12,6 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Q
 from django.core.paginator import Paginator
-from .forms import UserBioForm
 
 
 @csrf_protect
@@ -147,21 +146,6 @@ def register_view(request):
 @never_cache
 def home_view(request):
     return render(request, 'home.html')
-
-@login_required
-def update_bio(request):
-    user = request.user
-    if request.method == 'POST':
-        form = UserBioForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Bio updated successfully.")
-            return redirect('home')  # or change to 'profile' if you have one
-    else:
-        form = UserBioForm(instance=user)
-
-    return render(request, 'update_bio.html', {'form': form})
-
 
 
 def logout_view(request):
